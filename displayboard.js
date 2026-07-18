@@ -1,6 +1,7 @@
 let draggedFrom = null;
 let selectedSq = null;         // board index of the click-selected piece, or null
 let selectedFromStr = '';      // its algebraic square (e.g. "e1")
+let hintSq = null;             // board index of the hinted piece to move, or null
 
 function clearSelection() {
     selectedSq = null;
@@ -14,6 +15,25 @@ function updateSelectionHighlight() {
         const r = parseInt(td.dataset.row);
         const sq = c + 10 * r + 21;
         td.classList.toggle('selected-square', selectedSq != null && sq === selectedSq);
+    });
+}
+
+function highlightHint(sq) {
+    hintSq = sq;
+    updateHintHighlight();
+}
+
+function clearHint() {
+    hintSq = null;
+    updateHintHighlight();
+}
+
+function updateHintHighlight() {
+    document.querySelectorAll('#chessboard td').forEach((td) => {
+        const c = parseInt(td.dataset.col);
+        const r = parseInt(td.dataset.row);
+        const sq = c + 10 * r + 21;
+        td.classList.toggle('hint-square', hintSq != null && sq === hintSq);
     });
 }
 
@@ -32,10 +52,8 @@ function handleDragStart(event) {
         row: parseInt(cell.dataset.row),
         element: el
     };
-    // Hide the source piece during the drag, but only while the drag is still
-    // live. A very short / aborted drag (easy to trigger with fast clicking)
-    // can fire 'dragend' before this timeout runs; without the guard that left
-    // the piece stuck invisible ("vanishing king").
+    // Hide the source piece only while the drag is live; a dragend that fires
+    // before this deferred hide must leave the piece visible.
     let dragEnded = false;
     el.addEventListener('dragend', () => {
         dragEnded = true;
@@ -114,6 +132,7 @@ function display() {
     playBeep();
     selectedSq = null;             // a fresh render always starts unselected
     selectedFromStr = '';
+    hintSq = null;                 // and without a stale hint
     const chessboardElement = document.getElementById('chessboard');
     chessboardElement.innerHTML = '';
     const fragment = document.createDocumentFragment();

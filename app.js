@@ -184,15 +184,15 @@ async function computerMoveAndRecord() {
     const gen = positionGeneration;
     document.getElementById('undoMoveBtn').disabled = true;
 
-    // Wait for perfection: never move until the full tablebase is loaded.
+    // Don't move until the full tablebase is loaded.
     if (!fullTbReady && !fullTbLoadFailed && typeof ensureFullTbLoaded === 'function') {
         document.getElementById('messages').textContent = 'Loading tablebase…';
         await ensureFullTbLoaded();
         if (gen === positionGeneration) document.getElementById('messages').textContent = '';
     }
 
-    // The position changed while we were loading (new position / undo) — abandon
-    // this reply so a stale move can't be applied to a fresh board.
+    // Position changed during loading (new position / undo): abandon this reply
+    // so a stale move can't be applied to a fresh board.
     if (gen !== positionGeneration) {
         engineThinking = false;
         document.getElementById('undoMoveBtn').disabled = false;
@@ -213,7 +213,7 @@ async function computerMoveAndRecord() {
                 finishGame(status);
                 ended = true;
                 if (autoPlayActive) {
-                    // Waiting for instructions: stop after the game ends.
+                    // Stop after the game ends.
                     autoPlayActive = false;
                     updateAutoPlayBtn();
                 }
@@ -231,6 +231,29 @@ async function computerMoveAndRecord() {
     if (!ended && autoPlayActive && !gameOverDisplayed) {
         maybeEngineReply(AUTO_DELAY);
     }
+}
+
+async function showHint() {
+    if (autoPlayActive || engineThinking || gameOverDisplayed) return;
+    if (player !== humanPlaysSide) return;
+
+    // Need the tablebase to know the perfect move; load it on demand.
+    if (typeof fullTbReady !== 'undefined' && !fullTbReady && !fullTbLoadFailed
+        && typeof ensureFullTbLoaded === 'function') {
+        const gen = positionGeneration;
+        document.getElementById('messages').textContent = 'Loading tablebase…';
+        await ensureFullTbLoaded();
+        if (gen !== positionGeneration) return;   // position changed while loading
+        document.getElementById('messages').textContent = '';
+    }
+    if (player !== humanPlaysSide || gameOverDisplayed) return;
+
+    const best = (typeof fullTablebaseMove === 'function') ? fullTablebaseMove(LML) : null;
+    if (!best) {
+        document.getElementById('messages').textContent = 'No hint available.';
+        return;
+    }
+    highlightHint(best[0]);
 }
 
 function showMoveFeedback(feedback) {
@@ -253,6 +276,7 @@ function maybeEngineReply(delayMs) {
 }
 
 document.getElementById('undoMoveBtn').addEventListener('click', undoLastMove);
+document.getElementById('hintBtn').addEventListener('click', showHint);
 document.getElementById('flipBtn').addEventListener('click', flip);
 document.getElementById('newPositionBtn').addEventListener('click', startNewPosition);
 document.getElementById('autoPlayBtn').addEventListener('click', toggleAutoPlay);
