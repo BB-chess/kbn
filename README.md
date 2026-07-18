@@ -1,6 +1,6 @@
 # KBN vs K — Bishop & Knight Mate Trainer
 
-A tiny, offline-capable web app (PWA) for practising the bishop-and-knight
+Any, offline-capable web app (PWA) for practising the bishop-and-knight
 checkmate against a **perfect defender**. The engine plays from a complete
 KBNK distance-to-mate tablebase, so it always defends optimally and you get
 instant feedback when a move drifts from the fastest mate.
