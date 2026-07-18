@@ -124,6 +124,18 @@ body {
     outline-offset: -4px;
 }
 
+/* Hint: the piece the engine would move, pulsed so it reads over any square. */
+#chessboard td.hint-square {
+    outline: 4px solid #e0a52b;
+    outline-offset: -4px;
+    animation: hint-pulse 1s ease-in-out infinite;
+}
+
+@keyframes hint-pulse {
+    0%, 100% { outline-color: #e0a52b; }
+    50%      { outline-color: rgba(224, 165, 43, 0.35); }
+}
+
 .controls {
     display: flex;
     flex-wrap: wrap;
