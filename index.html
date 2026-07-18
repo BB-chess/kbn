@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KBN vs K</title>
+    <meta name="theme-color" content="#1a2220">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="icons/icon-512.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="layout">
+        <aside class="panel">
+            <h1 class="brand">KBN vs K</h1>
+            <p class="tagline">Practise the bishop and knight mate. The engine plays perfectly.</p>
+            <button type="button" id="installBtn" class="install-btn" hidden>Install app</button>
+
+            <h2>Role</h2>
+            <div class="role-row">
+                <label><input type="radio" name="role" value="attack" checked> I attack (KBN)</label>
+                <label><input type="radio" name="role" value="defend"> I defend (lone K)</label>
+            </div>
+
+            <h2>Difficulty</h2>
+            <div class="role-row">
+                <label>Distance from mate:
+                    <select id="mateTarget">
+                        <option value="random" selected>Random</option>
+                    </select>
+                </label>
+            </div>
+            <p class="meta" id="mateTargetInfo">Loading tablebase…</p>
+
+            <p class="meta" id="bestValueDisplay"></p>
+            <p class="feedback" id="moveFeedback" aria-live="polite"></p>
+            <p class="meta" id="cornerHint"></p>
+            <p class="meta" id="fiftyMove">50-move plies: 0 / 100</p>
+            <div id="messages"></div>
+        </aside>
+
+        <main class="board-wrap">
+            <table id="chessboard"></table>
+            <div class="controls">
+                <input type="text" id="moveInput" placeholder="e.g. e1d2" autocomplete="off">
+                <button type="button" class="primary" id="newPositionBtn">New position</button>
+                <button type="button" id="undoMoveBtn">Undo</button>
+                <button type="button" id="autoPlayBtn">Auto-play</button>
+                <button type="button" id="flipBtn">Flip</button>
+            </div>
+            <p class="meta" id="fenLine"></p>
+        </main>
+
+        <aside class="panel">
+            <h2>Moves</h2>
+            <div id="Thegame"></div>
+        </aside>
+    </div>
+
+    <footer class="credit">
+        Chess piece images: Cburnett set by Colin M. L. Burnett, used under the GNU GPL.
+    </footer>
+
+    <script src="playBeep.js"></script>
+    <script src="precompute.js"></script>
+    <script src="valueSquareNames.js"></script>
+    <script src="captureMoves.js"></script>
+    <script src="legalMoves.js"></script>
+    <script src="recordMove.js"></script>
+    <script src="gamePhase.js"></script>
+    <script src="displayboard.js"></script>
+    <script src="setOffBoard.js"></script>
+    <script src="makeMove.js"></script>
+    <script src="undoMove.js"></script>
+    <script src="convertMove.js"></script>
+    <script src="inCheck.js"></script>
+    <script src="testForCheck.js"></script>
+    <script src="makeFEN.js"></script>
+    <script src="playUi.js"></script>
+    <script src="randomPosition.js"></script>
+    <script src="fullTablebase.js"></script>
+    <script src="computerMove.js"></script>
+    <script src="app.js"></script>
+    <script src="pwa.js"></script>
+</body>
+</html>

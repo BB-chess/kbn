@@ -1,0 +1,236 @@
+:root {
+    --bg0: #1a2220;
+    --bg1: #24302c;
+    --ink: #e8efe6;
+    --muted: #9aafa4;
+    --accent: #c4a35a;
+    --light: #c4a574;
+    --dark: #6b4f35;
+    --panel: #2a3833;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+    color: var(--ink);
+    background:
+        radial-gradient(ellipse 80% 50% at 20% 0%, #2f4a3e 0%, transparent 55%),
+        radial-gradient(ellipse 60% 40% at 90% 100%, #3a3020 0%, transparent 50%),
+        var(--bg0);
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: minmax(280px, 1fr) auto minmax(220px, 0.9fr);
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    align-items: start;
+}
+
+.brand {
+    font-family: Georgia, "Palatino Linotype", serif;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    letter-spacing: 0.04em;
+    margin: 0 0 0.25rem;
+    color: var(--accent);
+}
+
+.tagline {
+    color: var(--muted);
+    margin: 0 0 1rem;
+    font-size: 0.95rem;
+}
+
+.install-btn {
+    display: block;
+    width: 100%;
+    margin: 0 0 1.25rem;
+    background: var(--accent);
+    color: #1a1810;
+    border-color: #a88840;
+    font-weight: 600;
+}
+
+/* The bare `hidden` attribute is overridden by the display rule above, so make
+   it win explicitly (otherwise the button never hides). */
+.install-btn[hidden] {
+    display: none;
+}
+
+.panel {
+    background: color-mix(in srgb, var(--panel) 88%, transparent);
+    border: 1px solid #3d5248;
+    padding: 1rem 1.1rem;
+    border-radius: 2px;
+}
+
+.panel h2 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin: 0 0 0.75rem;
+    font-weight: 600;
+}
+
+.board-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#chessboard {
+    border-collapse: collapse;
+    width: min(72vw, 520px);
+    height: min(72vw, 520px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+    border: 3px solid #2a2118;
+}
+
+.piece {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    object-fit: contain;
+    user-select: none;
+    cursor: grab;
+    pointer-events: auto;
+}
+
+#chessboard td {
+    width: 12.5%;
+    height: 12.5%;
+    padding: 0;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    cursor: pointer;
+}
+
+#chessboard td.corner-hint {
+    outline: 2px solid rgba(196, 163, 90, 0.55);
+    outline-offset: -2px;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    justify-content: center;
+    margin-top: 0.9rem;
+    max-width: 520px;
+}
+
+button, .btn {
+    font: inherit;
+    padding: 0.45rem 0.85rem;
+    border: 1px solid #5a6f64;
+    background: #31443c;
+    color: var(--ink);
+    cursor: pointer;
+    border-radius: 2px;
+}
+
+button:hover { background: #3d564b; }
+button:disabled { opacity: 0.45; cursor: default; }
+
+button.primary {
+    background: var(--accent);
+    color: #1a1810;
+    border-color: #a88840;
+    font-weight: 600;
+}
+
+input[type="text"] {
+    font: inherit;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid #5a6f64;
+    background: #1e2a26;
+    color: var(--ink);
+    width: 7rem;
+}
+
+.meta {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin: 0.35rem 0;
+}
+
+.meta strong { color: var(--ink); }
+
+#Thegame {
+    max-height: 420px;
+    overflow-y: auto;
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 0.9rem;
+    line-height: 1.45;
+}
+
+#theMoves {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: var(--muted);
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.game-over-banner {
+    margin-top: 0.75rem;
+    padding: 0.65rem;
+    background: #1e2a26;
+    border-left: 3px solid var(--accent);
+}
+
+.role-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+}
+
+.role-row label {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+#messages {
+    min-height: 1.4em;
+    color: var(--accent);
+    margin-top: 0.5rem;
+}
+
+.feedback {
+    font-size: 0.9rem;
+    font-weight: 600;
+    min-height: 1.4em;
+    margin: 0.35rem 0;
+    color: var(--muted);
+}
+
+.feedback.good { color: #7fca8c; }
+.feedback.warn { color: #e6c65c; }
+.feedback.bad  { color: #e5806f; }
+
+.credit {
+    color: var(--muted);
+    font-size: 0.72rem;
+    text-align: center;
+    opacity: 0.75;
+    padding: 0.75rem 1rem 1.25rem;
+}
+
+@media (max-width: 900px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+}

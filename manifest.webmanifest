@@ -1,0 +1,16 @@
+{
+  "name": "KBN vs K — Bishop & Knight Mate Trainer",
+  "short_name": "KBN vs K",
+  "description": "Practise the bishop and knight checkmate against a perfect (tablebase) defender.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#1a2220",
+  "theme_color": "#1a2220",
+  "icons": [
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
