@@ -119,6 +119,11 @@ body {
     outline-offset: -2px;
 }
 
+#chessboard td.selected-square {
+    outline: 4px solid #2f81f7;
+    outline-offset: -4px;
+}
+
 .controls {
     display: flex;
     flex-wrap: wrap;

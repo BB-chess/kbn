@@ -1,4 +1,21 @@
 let draggedFrom = null;
+let selectedSq = null;         // board index of the click-selected piece, or null
+let selectedFromStr = '';      // its algebraic square (e.g. "e1")
+
+function clearSelection() {
+    selectedSq = null;
+    selectedFromStr = '';
+    updateSelectionHighlight();
+}
+
+function updateSelectionHighlight() {
+    document.querySelectorAll('#chessboard td').forEach((td) => {
+        const c = parseInt(td.dataset.col);
+        const r = parseInt(td.dataset.row);
+        const sq = c + 10 * r + 21;
+        td.classList.toggle('selected-square', selectedSq != null && sq === selectedSq);
+    });
+}
 
 const imagePieces = {
     '2': 'pieces/wN.svg', '-2': 'pieces/bN.svg',
@@ -49,24 +66,54 @@ function handleDrop(event) {
 }
 
 function handleClick(event) {
+    if (autoPlayActive || engineThinking || gameOverDisplayed) return;
+    if (player !== humanPlaysSide) return;
+
     const target = event.target.closest('td');
     if (!target) return;
     const col = parseInt(target.dataset.col);
     const row = parseInt(target.dataset.row);
-    const bp = 20 + col + 10 * row + 1;
-    const file = String.fromCharCode(97 + col);
-    const rank = row + 1;
+    const bp = col + 10 * row + 21;
+    const sqStr = String.fromCharCode(97 + col) + (row + 1);
     const moveInput = document.getElementById('moveInput');
-    moveInput.value += file + rank;
+    const ownPiece = (player === 0 && board[bp] > 0) || (player === 1 && board[bp] < 0);
 
-    if (moveInput.value.length === 2 && player === 0 && board[bp] < 1) moveInput.value = '';
-    if (moveInput.value.length === 2 && player === 1 && board[bp] > -1) moveInput.value = '';
-    if (moveInput.value.length === 4) makeMoveFromInput();
-    if (moveInput.value.length > 4) moveInput.value = '';
+    // Nothing selected yet: first click must land on one of the player's pieces.
+    if (selectedSq == null) {
+        if (!ownPiece) { moveInput.value = ''; return; }
+        selectedSq = bp;
+        selectedFromStr = sqStr;
+        moveInput.value = sqStr;
+        updateSelectionHighlight();
+        return;
+    }
+
+    // Clicking the selected piece again clears the selection.
+    if (bp === selectedSq) {
+        moveInput.value = '';
+        clearSelection();
+        return;
+    }
+
+    // Clicking another of your own pieces switches the selection.
+    if (ownPiece) {
+        selectedSq = bp;
+        selectedFromStr = sqStr;
+        moveInput.value = sqStr;
+        updateSelectionHighlight();
+        return;
+    }
+
+    // Otherwise the second click is the destination.
+    moveInput.value = selectedFromStr + sqStr;
+    clearSelection();
+    makeMoveFromInput();
 }
 
 function display() {
     playBeep();
+    selectedSq = null;             // a fresh render always starts unselected
+    selectedFromStr = '';
     const chessboardElement = document.getElementById('chessboard');
     chessboardElement.innerHTML = '';
     const fragment = document.createDocumentFragment();
