@@ -1,5 +1,5 @@
 /* KBN vs K — offline service worker. Precaches the whole app (incl. tablebase). */
-const CACHE = 'kbnvk-v12';
+const CACHE = 'kbnvk-v13';
 
 const ASSETS = [
     './',

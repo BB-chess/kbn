@@ -190,6 +190,16 @@ input[type="text"] {
     line-height: 1.45;
 }
 
+.move-nav {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+}
+
+.move-nav button {
+    flex: 1;
+}
+
 #theMoves {
     font-size: 0.85rem;
     line-height: 1.4;

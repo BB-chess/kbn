@@ -94,9 +94,5 @@ function finishGame(status) {
     const messages = document.getElementById('messages');
     if (messages) messages.textContent = status.reason + '. ' + status.result;
     display();
-}
-
-function flip() {
-    sideAtBottom = sideAtBottom === 'w' ? 'b' : 'w';
-    display();
+    if (typeof updateMoveNavButtons === 'function') updateMoveNavButtons();
 }

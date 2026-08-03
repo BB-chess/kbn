@@ -39,14 +39,24 @@ function updateAutoPlayBtn() {
     btn.classList.toggle('primary', autoPlayActive);
 }
 
+function updateMoveNavButtons() {
+    const back = document.getElementById('stepBackBtn');
+    const fwd = document.getElementById('stepFwdBtn');
+    const busy = autoPlayActive || engineThinking;
+    if (back) back.disabled = busy || historyIndex === 0;
+    if (fwd) fwd.disabled = busy || gameOverDisplayed;
+}
+
 function toggleAutoPlay() {
     if (autoPlayActive) {
         autoPlayActive = false;
         updateAutoPlayBtn();
+        updateMoveNavButtons();
         return;
     }
     autoPlayActive = true;
     updateAutoPlayBtn();
+    updateMoveNavButtons();
     if (gameOverDisplayed) startNewPosition();
     else maybeEngineReply(300);
 }
@@ -90,6 +100,7 @@ function startNewPosition() {
     showMoveFeedback(null);
 
     maybeEngineReply(autoPlayActive ? AUTO_DELAY : 250);
+    updateMoveNavButtons();
 }
 
 function updateFenLine() {
@@ -122,6 +133,7 @@ function applyHumanMove(fromSq, toSq) {
         return;
     }
     maybeEngineReply(120);
+    updateMoveNavButtons();
 }
 
 function makeMoveFromInput() {
@@ -174,6 +186,69 @@ function undoLastMove() {
     updateFenLine();
     document.getElementById('messages').textContent = '';
     showMoveFeedback(null);
+    updateMoveNavButtons();
+}
+
+/** One ply back through the solution (unlike Undo, which rewinds in pairs). */
+function stepBackward() {
+    if (autoPlayActive || engineThinking) return;
+    if (historyIndex === 0) return;
+    positionGeneration++;
+    const parts = movesPlayed.trim().split(/\s+/).filter(Boolean);
+    parts.pop();
+    movesPlayed = parts.length ? parts.join(' ') + ' ' : '';
+    undoMove();
+    undoTrackedPosition();
+    gamePhase();
+    syncLastMoveHighlight();
+    lastGameStatus = { over: false, result: '*', reason: '' };
+    gameOverDisplayed = false;
+    display();
+    updateFenLine();
+    document.getElementById('messages').textContent = '';
+    showMoveFeedback(null);
+    updateMoveNavButtons();
+}
+
+/** Play the next perfect tablebase move for whoever is to move. */
+async function stepForward() {
+    if (autoPlayActive || engineThinking || gameOverDisplayed) return;
+
+    engineThinking = true;
+    updateMoveNavButtons();
+    document.getElementById('undoMoveBtn').disabled = true;
+    const gen = positionGeneration;
+
+    if (!fullTbReady && !fullTbLoadFailed && typeof ensureFullTbLoaded === 'function') {
+        document.getElementById('messages').textContent = 'Loading tablebase…';
+        await ensureFullTbLoaded();
+        if (gen === positionGeneration) document.getElementById('messages').textContent = '';
+    }
+
+    if (gen !== positionGeneration) {
+        engineThinking = false;
+        document.getElementById('undoMoveBtn').disabled = false;
+        updateMoveNavButtons();
+        return;
+    }
+
+    try {
+        await computerMove();
+        if (computerMovePlayed) {
+            recordMove(computerMovePlayed[0], computerMovePlayed[1]);
+            recordCurrentPosition();
+            syncLastMoveHighlight();
+            display();
+            updateFenLine();
+            showMoveFeedback(null);
+            const status = getGameStatus();
+            if (status.over) finishGame(status);
+        }
+    } finally {
+        engineThinking = false;
+        document.getElementById('undoMoveBtn').disabled = false;
+        updateMoveNavButtons();
+    }
 }
 
 async function computerMoveAndRecord() {
@@ -181,6 +256,7 @@ async function computerMoveAndRecord() {
     if (!autoPlayActive && player === humanPlaysSide) return;
 
     engineThinking = true;
+    updateMoveNavButtons();
     const gen = positionGeneration;
     document.getElementById('undoMoveBtn').disabled = true;
 
@@ -196,6 +272,7 @@ async function computerMoveAndRecord() {
     if (gen !== positionGeneration) {
         engineThinking = false;
         document.getElementById('undoMoveBtn').disabled = false;
+        updateMoveNavButtons();
         return;
     }
 
@@ -226,6 +303,7 @@ async function computerMoveAndRecord() {
     } finally {
         engineThinking = false;
         document.getElementById('undoMoveBtn').disabled = false;
+        updateMoveNavButtons();
     }
 
     if (!ended && autoPlayActive && !gameOverDisplayed) {
@@ -277,7 +355,8 @@ function maybeEngineReply(delayMs) {
 
 document.getElementById('undoMoveBtn').addEventListener('click', undoLastMove);
 document.getElementById('hintBtn').addEventListener('click', showHint);
-document.getElementById('flipBtn').addEventListener('click', flip);
+document.getElementById('stepBackBtn').addEventListener('click', stepBackward);
+document.getElementById('stepFwdBtn').addEventListener('click', stepForward);
 document.getElementById('newPositionBtn').addEventListener('click', startNewPosition);
 document.getElementById('autoPlayBtn').addEventListener('click', toggleAutoPlay);
 document.getElementById('moveInput').addEventListener('keydown', (e) => {
@@ -321,4 +400,5 @@ if (typeof ensureFullTbLoaded === 'function') {
 }
 
 updateAutoPlayBtn();
+updateMoveNavButtons();
 startNewPosition();
