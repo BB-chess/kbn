@@ -68,6 +68,15 @@ function updateRoleFromUi() {
     sideAtBottom = humanPlaysSide === 0 ? 'w' : 'b';
 }
 
+/** Switch attack/defend without regenerating the board. */
+function applyRoleChange() {
+    positionGeneration++;   // cancel any in-flight engine reply for the old side
+    updateRoleFromUi();
+    display();
+    updateMoveNavButtons();
+    maybeEngineReply(250);
+}
+
 function startNewPosition() {
     positionGeneration++;
     gameOverDisplayed = false;
@@ -365,7 +374,7 @@ document.getElementById('moveInput').addEventListener('keydown', (e) => {
 document.querySelectorAll('input[name="role"]').forEach((el) => {
     el.addEventListener('change', () => {
         if (autoPlayActive) return;
-        startNewPosition();
+        applyRoleChange();
     });
 });
 document.getElementById('mateTarget').addEventListener('change', () => {
