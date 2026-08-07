@@ -325,7 +325,7 @@ function formatMoveFeedback(fb) {
     }
     return {
         cls,
-        text: label + ' — you were mated ' + fb.deltaMoves + ' ' + unit + ' too soon (mate in '
+        text: label + ' — mate is ' + fb.deltaMoves + ' ' + unit + ' closer now (mate in '
             + fb.matesAfter + ', best defence ' + fb.matesBest + ').'
     };
 }
