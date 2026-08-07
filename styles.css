@@ -183,7 +183,7 @@ input[type="text"] {
 .meta strong { color: var(--ink); }
 
 #Thegame {
-    max-height: 420px;
+    height: 420px;
     overflow-y: auto;
     font-family: ui-monospace, Consolas, monospace;
     font-size: 0.9rem;
@@ -194,6 +194,7 @@ input[type="text"] {
     display: flex;
     gap: 0.4rem;
     margin-top: 0.75rem;
+    flex-shrink: 0;
 }
 
 .move-nav button {
