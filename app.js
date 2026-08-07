@@ -68,11 +68,12 @@ function updateRoleFromUi() {
     sideAtBottom = humanPlaysSide === 0 ? 'w' : 'b';
 }
 
-/** Switch attack/defend without regenerating the board. */
+/** Switch attack/defend without regenerating or flipping the board. */
 function applyRoleChange() {
     positionGeneration++;   // cancel any in-flight engine reply for the old side
-    updateRoleFromUi();
-    display();
+    const role = document.querySelector('input[name="role"]:checked').value;
+    whiteAttacks = true;
+    humanPlaysSide = role === 'attack' ? 0 : 1;
     updateMoveNavButtons();
     maybeEngineReply(250);
 }
