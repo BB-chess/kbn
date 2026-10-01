@@ -1,4 +1,4 @@
-/* PWA plumbing: register the service worker and drive the Install button. */
+/* Register the service worker and show the install button when offered. */
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('service-worker.js')

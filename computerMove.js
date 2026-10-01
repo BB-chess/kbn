@@ -14,7 +14,7 @@ async function computerMove() {
     if (typeof fullTbReady !== 'undefined' && fullTbReady && typeof fullTablebaseMove === 'function') {
         chosen = fullTablebaseMove(moves);
     }
-    if (!chosen) chosen = moves[0];   // safety net if the tablebase isn't loaded
+    if (!chosen) chosen = moves[0];   // tablebase not loaded
 
     makeMove(chosen);
     computerMovePlayed = chosen;

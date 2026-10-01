@@ -34,9 +34,8 @@ function ftbProbe(wk, wb, wn, bk, stm) {
 }
 
 /**
- * Load the raw tablebase bytes. Prefers the gzipped file (small enough for a
- * GitHub browser upload and quicker to download), decompressing it in-browser;
- * falls back to the uncompressed .bin if the gzip isn't present.
+ * Load the tablebase. Uses the gzipped file when the browser can decompress
+ * it, otherwise the raw .bin.
  */
 async function loadFtbBytes() {
     if (typeof DecompressionStream === 'function') {
