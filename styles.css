@@ -85,9 +85,11 @@ body {
 }
 
 #chessboard {
-    border-collapse: collapse;
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    grid-template-rows: repeat(8, minmax(0, 1fr));
     width: min(72vw, 520px);
-    height: min(72vw, 520px);
+    aspect-ratio: 1;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
     border: 3px solid #2a2118;
 }
@@ -104,28 +106,26 @@ body {
     pointer-events: auto;
 }
 
-#chessboard td {
-    width: 12.5%;
-    height: 12.5%;
+#chessboard .square {
+    min-width: 0;
+    min-height: 0;
     padding: 0;
-    text-align: center;
-    vertical-align: middle;
     position: relative;
     cursor: pointer;
 }
 
-#chessboard td.corner-hint {
+#chessboard .square.corner-hint {
     outline: 2px solid rgba(196, 163, 90, 0.55);
     outline-offset: -2px;
 }
 
-#chessboard td.selected-square {
+#chessboard .square.selected-square {
     outline: 4px solid #2f81f7;
     outline-offset: -4px;
 }
 
 /* Hint: the piece the engine would move, pulsed so it reads over any square. */
-#chessboard td.hint-square {
+#chessboard .square.hint-square {
     outline: 4px solid #e0a52b;
     outline-offset: -4px;
     animation: hint-pulse 1s ease-in-out infinite;

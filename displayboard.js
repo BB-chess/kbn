@@ -10,11 +10,11 @@ function clearSelection() {
 }
 
 function updateSelectionHighlight() {
-    document.querySelectorAll('#chessboard td').forEach((td) => {
-        const c = parseInt(td.dataset.col);
-        const r = parseInt(td.dataset.row);
+    document.querySelectorAll('#chessboard .square').forEach((cell) => {
+        const c = parseInt(cell.dataset.col);
+        const r = parseInt(cell.dataset.row);
         const sq = c + 10 * r + 21;
-        td.classList.toggle('selected-square', selectedSq != null && sq === selectedSq);
+        cell.classList.toggle('selected-square', selectedSq != null && sq === selectedSq);
     });
 }
 
@@ -29,11 +29,11 @@ function clearHint() {
 }
 
 function updateHintHighlight() {
-    document.querySelectorAll('#chessboard td').forEach((td) => {
-        const c = parseInt(td.dataset.col);
-        const r = parseInt(td.dataset.row);
+    document.querySelectorAll('#chessboard .square').forEach((cell) => {
+        const c = parseInt(cell.dataset.col);
+        const r = parseInt(cell.dataset.row);
         const sq = c + 10 * r + 21;
-        td.classList.toggle('hint-square', hintSq != null && sq === hintSq);
+        cell.classList.toggle('hint-square', hintSq != null && sq === hintSq);
     });
 }
 
@@ -45,7 +45,7 @@ const imagePieces = {
 
 function handleDragStart(event) {
     const el = event.target;
-    const cell = el.closest('td');
+    const cell = el.closest('.square');
     if (!cell) return;
     draggedFrom = {
         col: parseInt(cell.dataset.col),
@@ -87,7 +87,7 @@ function handleClick(event) {
     if (autoPlayActive || engineThinking || gameOverDisplayed) return;
     if (player !== humanPlaysSide) return;
 
-    const target = event.target.closest('td');
+    const target = event.target.closest('.square');
     if (!target) return;
     const col = parseInt(target.dataset.col);
     const row = parseInt(target.dataset.row);
@@ -138,7 +138,8 @@ function display() {
     const fragment = document.createDocumentFragment();
 
     const createCell = (piece, isLightSquare, col, row) => {
-        const cell = document.createElement('td');
+        const cell = document.createElement('div');
+        cell.className = 'square';
         cell.dataset.col = col;
         cell.dataset.row = row;
         const sq = col + 10 * row + 21;
@@ -178,15 +179,13 @@ function display() {
     const isWhiteBottom = sideAtBottom === 'w';
     for (let r = 0; r < 8; r++) {
         const actualRow = isWhiteBottom ? 7 - r : r;
-        const rowElement = document.createElement('tr');
         for (let col = 0; col < 8; col++) {
             const actualCol = isWhiteBottom ? col : 7 - col;
             const piece = board[actualCol + 10 * actualRow + 21];
             // a1 is dark: light when (file + rank) is odd (0-based).
             const isLight = (actualCol + actualRow) % 2 === 1;
-            rowElement.appendChild(createCell(piece, isLight, actualCol, actualRow));
+            fragment.appendChild(createCell(piece, isLight, actualCol, actualRow));
         }
-        fragment.appendChild(rowElement);
     }
 
     chessboardElement.appendChild(fragment);
