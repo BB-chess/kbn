@@ -47,6 +47,11 @@ function handleDragStart(event) {
     const el = event.target;
     const cell = el.closest('.square');
     if (!cell) return;
+    // 'move' (not the default copy) so the OS cursor has no green plus.
+    if (event.dataTransfer) {
+        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData('text/plain', '');
+    }
     draggedFrom = {
         col: parseInt(cell.dataset.col),
         row: parseInt(cell.dataset.row),
@@ -65,6 +70,7 @@ function handleDragStart(event) {
 
 function handleDragOver(event) {
     event.preventDefault();
+    if (event.dataTransfer) event.dataTransfer.dropEffect = 'move';
 }
 
 function handleDrop(event) {
